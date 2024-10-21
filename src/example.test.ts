@@ -1,5 +1,4 @@
 import {
-  PostgreSqlDriver,
   MikroORM,
   Entity,
   PrimaryKey,
@@ -7,7 +6,7 @@ import {
   EntitySchema,
   Type,
   Platform,
-} from "@mikro-orm/postgresql";
+} from "@mikro-orm/sqlite";
 
 export class UserId {
   public static create(value: number): UserId {
@@ -17,7 +16,7 @@ export class UserId {
   private readonly _value: number;
   private constructor(value: number) {
     if (!Number.isInteger(value) || value < 0) {
-      throw new Error('Invalid UserId value');
+      throw new Error("Invalid UserId value");
     }
     this._value = value;
   }
@@ -68,29 +67,28 @@ class User {
   }
 }
 
-class UserIdType extends Type<UserId | undefined, number | undefined>{
+class UserIdType extends Type<UserId | undefined, number | undefined> {
   convertToDatabaseValue(
     value: UserId | undefined,
-    platform: Platform,
+    platform: Platform
   ): number | undefined {
     return value instanceof UserId ? value.value : value;
   }
 
   convertToJSValue(
     value: number | undefined,
-    platform: Platform,
+    platform: Platform
   ): UserId | undefined {
-    return typeof value === 'number' ? UserId.create(value) : value;
+    return typeof value === "number" ? UserId.create(value) : value;
   }
 
   getColumnType(): string {
-    return 'int';
+    return "int";
   }
 
   compareAsType(): string {
-    return 'number';
+    return "number";
   }
-
 }
 
 const userSchema = new EntitySchema<User>({
@@ -106,11 +104,7 @@ let orm: MikroORM;
 
 beforeAll(async () => {
   orm = await MikroORM.init({
-    dbName: "test",
-    password: "root",
-    user: "root",
-    host: "localhost",
-    port: 5432,
+    dbName: ":memory:",
     entities: [userSchema],
     debug: ["query", "query-params"],
     allowGlobalContext: true, // only for testing

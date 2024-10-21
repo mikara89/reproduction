@@ -13,7 +13,6 @@
   "dependencies": {
     "@mikro-orm/core": "6.3.13",
     "@mikro-orm/sqlite": "6.3.13",
-    "@mikro-orm/postgresql": "6.3.13",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^5.1.7"
   },
